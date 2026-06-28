@@ -1,0 +1,199 @@
+# Flask DevOps Project – AWS Infrastructure with Terraform
+
+## Overview
+
+This project provisions the AWS infrastructure required to deploy a Dockerized Flask application on Amazon EKS using Terraform.
+
+The infrastructure includes:
+
+* Amazon S3 bucket for Terraform remote state
+* Amazon VPC
+* Public subnet
+* Private subnet
+* Amazon EKS cluster
+* Two EKS managed node groups
+* Amazon ECR repository
+* Required IAM roles and permissions
+
+---
+
+## Prerequisites
+
+Before deploying, ensure you have the following installed:
+
+* Terraform (v1.5 or later)
+* AWS CLI
+* kubectl
+* Docker
+* AWS account
+* Configured AWS credentials
+
+Verify the installations:
+
+```bash
+terraform -version
+aws --version
+kubectl version --client
+docker --version
+```
+
+---
+
+## Configure AWS Credentials
+
+Configure the AWS CLI:
+
+```bash
+aws configure
+```
+
+Enter:
+
+* AWS Access Key ID
+* AWS Secret Access Key
+* Default Region: `us-east-1`
+* Output Format: `json`
+
+Verify the credentials:
+
+```bash
+aws sts get-caller-identity
+```
+
+---
+
+## Clone the Repository
+
+```bash
+git clone <repository-url>
+cd <repository-folder>
+```
+
+---
+
+## Initialize Terraform
+
+Initialize Terraform and download the required providers and modules:
+
+```bash
+terraform init
+```
+
+If migrating an existing local state to the S3 backend:
+
+```bash
+terraform init -migrate-state
+```
+
+---
+
+## Review the Execution Plan
+
+Generate the Terraform execution plan:
+
+```bash
+terraform plan
+```
+
+Review the resources that Terraform will create.
+
+---
+
+## Deploy the Infrastructure
+
+Create all AWS resources:
+
+```bash
+terraform apply
+```
+
+Type:
+
+```text
+yes
+```
+
+when prompted.
+
+Terraform will provision:
+
+* S3 backend
+* VPC
+* Public subnet
+* Private subnet
+* EKS cluster
+* Two managed node groups
+* Amazon ECR repository
+* IAM roles
+
+---
+
+## Verify the Outputs
+
+Display all Terraform outputs:
+
+```bash
+terraform output
+```
+
+Example outputs include:
+
+* Cluster name
+* Cluster endpoint
+* ECR repository URL
+* IAM Role ARN
+* VPC ID
+* Public subnet ID
+* Private subnet ID
+
+---
+
+## Configure kubectl
+
+Update the local kubeconfig file:
+
+```bash
+aws eks update-kubeconfig \
+  --region us-east-1 \
+  --name flask-eks
+```
+
+Verify the connection:
+
+```bash
+kubectl get nodes
+```
+
+The worker nodes should appear with a `Ready` status.
+
+---
+
+## Destroy the Infrastructure
+
+To remove all created AWS resources:
+
+```bash
+terraform destroy
+```
+
+Confirm with:
+
+```text
+yes
+```
+
+---
+
+## Project Structure
+
+```text
+.
+├── backend.tf
+├── provider.tf
+├── vpc.tf
+├── subnet.tf
+├── eks.tf
+├── ecr.tf
+├── outputs.tf
+└── README.md
+```
